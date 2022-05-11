@@ -1,0 +1,62 @@
+html{
+    background-image: url("ProfileAndPostPics/Regular_Balu.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: 100vw 100vh;
+}
+
+.bgbox{
+    left: 15%;
+    margin: auto;
+    width:70%;
+    height: 100vh;
+    background-color: rgba(255,255,255,0.9);
+    position:fixed;
+    background-repeat: no-repeat;
+}
+
+body {
+    margin: 0;
+}
+
+h3{
+    font-size: 2.8vw;
+    margin-top: 0;
+}
+
+h4{
+    font-size: 2vw;
+    margin-top: 0;
+}
+.middle {
+    position: relative;
+    text-align: center;
+    width:100%;
+    margin: auto;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    font-size:  1.6vw;
+    color: #bd6b15;
+}
+
+.slighttext{
+    color: #a6a6a6;
+}
+
+button{
+    background-color: #bd6b15;
+    border: none;
+    color: #ffd07d;
+    padding: 1.5vw 1.8vw;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1.4vw;
+    border-radius: 10px;
+    transition-duration: 0.2s;
+    cursor:pointer;
+}
+button:hover{
+    background-color: #d7842c;
+    color: white;
+}

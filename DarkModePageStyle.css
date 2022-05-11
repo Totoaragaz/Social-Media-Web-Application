@@ -1,0 +1,56 @@
+html{
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    margin-bottom: 0;
+}
+
+body {
+    margin:0;
+    padding:0;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.middle{
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 100px;
+}
+.weaklingText{
+    padding-top: 120px;
+    font-size: 30px;
+    color: #4d4d4d;
+    text-align: center;
+    padding-bottom: 50px;
+}
+
+h1{
+    color:#d7842c;
+}
+
+h3{
+    margin:0;
+    color:#d7842c;
+}
+
+.darkModeButton{
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #bd6b15;
+    width: 30%;
+    border: none;
+    color: #ffd07d;
+    padding: 100px 180px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 40px;
+    border-radius: 10px;
+    transition-duration: 0.2s;
+    cursor:pointer;
+}
+
+.darkModeButton:hover{
+    background-color: #d7842c;
+    color: white;
+}
