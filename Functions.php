@@ -62,94 +62,64 @@ function blockUser($blocker,$blocked,$mysqli)
         $stmt->execute();
         if ($stmt->get_result()->num_rows == 0) {
             $stmt->close();
-            $stmt = $mysqli->prepare("INSERT INTO blocked values (?,?)");
-            $stmt->bind_param("ss", $blocker, $blocked);
-            $stmt->execute();
-            $stmt->close();
-            $stmt = $mysqli->prepare("DELETE FROM friends where Username1=? and Username2=?");
-            $stmt->bind_param("ss", $blocker, $blocked);
-            $stmt->execute();
-            $stmt->close();
-            $stmt = $mysqli->prepare("DELETE FROM friends where Username2=? and Username1=?");
-            $stmt->bind_param("ss", $blocker, $blocked);
-            $stmt->execute();
-            $stmt = $mysqli->prepare("DELETE FROM friendrequests where Username1=? and Username2=?");
-            $stmt->bind_param("ss", $blocker, $blocked);
-            $stmt->execute();
-            $stmt->close();
-            $stmt = $mysqli->prepare("DELETE FROM friendrequests where Username2=? and Username1=?");
-            $stmt->bind_param("ss", $blocker, $blocked);
-            $stmt->execute();
-            $stmt->close();
+            removeFriend($blocker,$blocked,$mysqli);
+            declineFriendRequest($blocker,$blocked,$mysqli);
+            declineFriendRequest($blocked,$blocker,$mysqli);
             $stmt = $mysqli->prepare("Select Id from posts where Username=?");
             $stmt->bind_param("s", $blocker);
             $stmt->execute();
             $blockerPosts = $stmt->get_result();
+            $stmt->close();
             foreach ($blockerPosts as $row) {
-                $stmt->close();
                 $stmt = $mysqli->prepare("Select cid from comments where Username=? and pid=?");
                 $stmt->bind_param("si", $blocked, $row["Id"]);
                 $stmt->execute();
                 $blockedComments = $stmt->get_result();
-                foreach ($blockedComments as $row2) {
-                    $stmt->close();
-                    $stmt = $mysqli->prepare("DELETE FROM likedcomments where cid=?");
-                    $stmt->bind_param("i", $row2['cid']);
-                    $stmt->execute();
-                    $stmt->close();
-                    $stmt = $mysqli->prepare("DELETE FROM comments where cid=?");
-                    $stmt->bind_param("i", $row2['cid']);
-                    $stmt->execute();
-                }
                 $stmt->close();
+                foreach ($blockedComments as $row2) {
+                    deleteComment($row2['cid'],$mysqli);
+                }
                 $stmt = $mysqli->prepare("Select cid from comments where Username=? and pid=?");
                 $stmt->bind_param("si", $blocker, $row["Id"]);
                 $stmt->execute();
                 $blockedComments = $stmt->get_result();
+                $stmt->close();
                 foreach ($blockedComments as $row2) {
-                    $stmt->close();
                     $stmt = $mysqli->prepare("DELETE FROM likedcomments where cid=? and Username=?");
                     $stmt->bind_param("is", $row2['cid'], $blocked);
                     $stmt->execute();
+                    $stmt->close();
                 }
-                $stmt->close();
                 $stmt = $mysqli->prepare("DELETE FROM likedposts where Username=? and pid=?");
                 $stmt->bind_param("si", $blocked, $row['Id']);
                 $stmt->execute();
+                $stmt->close();
             }
-            $stmt->close();
             $stmt = $mysqli->prepare("Select * from posts where Username=?");
             $stmt->bind_param("s", $blocked);
             $stmt->execute();
             $blockedPosts = $stmt->get_result();
+            $stmt->close();
             foreach ($blockedPosts as $row) {
-                $stmt->close();
                 $stmt = $mysqli->prepare("Select cid from comments where Username=? and pid=?");
                 $stmt->bind_param("si", $blocker, $row["Id"]);
                 $stmt->execute();
                 $blockerComments = $stmt->get_result();
-                foreach ($blockerComments as $row2) {
-                    $stmt->close();
-                    $stmt = $mysqli->prepare("DELETE FROM likedcomments where cid=?");
-                    $stmt->bind_param("i", $row2['cid']);
-                    $stmt->execute();
-                    $stmt->close();
-                    $stmt = $mysqli->prepare("DELETE FROM comments where cid=?");
-                    $stmt->bind_param("i", $row2['cid']);
-                    $stmt->execute();
-                }
                 $stmt->close();
+                foreach ($blockerComments as $row2) {
+                    deleteComment($row2['cid'],$mysqli);
+                }
                 $stmt = $mysqli->prepare("Select cid from comments where Username=? and pid=?");
                 $stmt->bind_param("si", $blocked, $row["Id"]);
                 $stmt->execute();
                 $blockedComments = $stmt->get_result();
+                $stmt->close();
                 foreach ($blockedComments as $row2) {
-                    $stmt->close();
                     $stmt = $mysqli->prepare("DELETE FROM likedcomments where cid=? and Username=?");
                     $stmt->bind_param("is", $row2['cid'], $blocker);
                     $stmt->execute();
+                    $stmt->close();
                 }
-                $stmt->close();
                 $stmt = $mysqli->prepare("DELETE FROM likedposts where Username=? and pid=?");
                 $stmt->bind_param("si", $blocker, $row['Id']);
                 $stmt->execute();
@@ -157,7 +127,11 @@ function blockUser($blocker,$blocked,$mysqli)
                 $stmt = $mysqli->prepare("DELETE FROM likedposts where Username=? and pid=?");
                 $stmt->bind_param("si", $blocked, $row['Id']);
                 $stmt->execute();
+                $stmt->close();
             }
+            $stmt = $mysqli->prepare("INSERT INTO blocked values (?,?)");
+            $stmt->bind_param("ss", $blocker, $blocked);
+            $stmt->execute();
         }
         $stmt->close();
     }
@@ -167,15 +141,10 @@ function blockUser($blocker,$blocked,$mysqli)
 }
 
 function unblockUser($blocker,$blocked,$mysqli){
-    try{
         $stmt = $mysqli->prepare("DELETE FROM blocked WHERE Username1=? and Username2=?");
         $stmt->bind_param("ss",$blocker,$blocked);
         $stmt->execute();
         $stmt->close();
-    }
-    catch (mysqli_sql_exception){
-
-    }
 }
 
 function reportUser($reporter,$reported,$mysqli){
@@ -292,7 +261,6 @@ function declineFriendRequest($sender, $receiver, $mysqli){
 }
 
 function removeFriend($remover, $removed, $mysqli){
-    try {
         $stmt = $mysqli->prepare("Select * from friends where Username1=? and Username2=? union
                                 Select * from friends where Username1=? and Username2=?");
         $stmt->bind_param("ssss", $remover, $removed, $removed, $remover);
@@ -308,10 +276,6 @@ function removeFriend($remover, $removed, $mysqli){
             $stmt->execute();
         }
         $stmt->close();
-    }
-    catch (mysqli_sql_exception){
-
-    }
 }
 
 function changeProfilePic($username,$newpic,$mysqli){
@@ -336,10 +300,14 @@ function makePost($username,$caption,$image,$mysqli){
 }
 
 function deletePost($pid,$mysqli){
-    $stmt = $mysqli->prepare("delete from comments where pid=?");
+    $stmt = $mysqli->prepare("Select cid from comments where pid=?");
     $stmt->bind_param("i",$pid);
     $stmt->execute();
+    $comments=$stmt->get_result();
     $stmt->close();
+    foreach($comments as $row){
+        deleteComment($row['cid'],$mysqli);
+    }
     $stmt = $mysqli->prepare("delete from likedposts where pid=?");
     $stmt->bind_param("i",$pid);
     $stmt->execute();
@@ -468,4 +436,118 @@ function checkIfAdmin($username,$mysqli):bool{
     $stmt->execute();
     if ($stmt->get_result()->num_rows!=0) return true;
     return false;
+}
+
+function banUser($username,$reason,$mysqli){
+    try {
+        $stmt = $mysqli->prepare("Select * from banned where Username=?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        if ($stmt->get_result()->num_rows == 0) {
+            $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM friends where Username1=? or Username2=?");
+            $stmt->bind_param("ss", $username, $username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM friendrequests where Username1=? or Username2=?");
+            $stmt->bind_param("ss", $username,$username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM likedposts where Username=?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM likedcomments where Username=?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM reportedusers where reported=?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("DELETE FROM blocked where Username1=? or Username2=?");
+            $stmt->bind_param("ss", $username, $username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("Select Id from posts where Username=?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $posts = $stmt->get_result();
+            $stmt->close();
+            foreach ($posts as $row) {
+                $stmt = $mysqli->prepare("Select cid from comments where pid=?");
+                $stmt->bind_param("i", $row["Id"]);
+                $stmt->execute();
+                $comments = $stmt->get_result();
+                $stmt->close();
+                foreach ($comments as $row2) {
+                    deleteComment($row2['cid'],$mysqli);
+                }
+                deletePost($row['Id'],$mysqli);
+            }
+            $stmt = $mysqli->prepare("DELETE FROM comments where Username=?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->close();
+            $stmt = $mysqli->prepare("INSERT INTO banned values (?,?)");
+            $stmt->bind_param("ss", $username, $reason);
+            $stmt->execute();
+        }
+        $stmt->close();
+    }
+    catch (mysqli_sql_exception $e){
+        echo $e;
+    }
+}
+
+function dismissUser($username,$mysqli){
+    $stmt = $mysqli->prepare("DELETE FROM reportedusers where reported=?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function dismissPost($id,$mysqli){
+    $stmt = $mysqli->prepare("DELETE FROM reportedposts where reported=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function dismissComment($id,$mysqli){
+    $stmt = $mysqli->prepare("DELETE FROM reportedcomments where reported=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function getStrikes($username,$mysqli) : int{
+    $stmt = $mysqli->prepare("Select strikes from profile where Username=?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $strikes=$stmt->get_result()->fetch_assoc();
+    $stmt->close();
+    return $strikes['strikes'];
+}
+
+function giveStrike($username,$mysqli): void
+{
+    $stmt = $mysqli->prepare("UPDATE profile set strikes=strikes+1 where Username=?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->close();
+    if (getStrikes($username,$mysqli)==3) banUser($username,"3 instances of violating the Community Guidelines",$mysqli);
+}
+
+function isBanned($username,$mysqli) {
+    $stmt = $mysqli->prepare("Select * from banned where Username=?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $banned=$stmt->get_result();
+    $stmt->close();
+    if ($banned->num_rows==0) return "good";
+    else {
+        $reason=$banned->fetch_assoc();
+        return $reason['reason'];
+    }
 }

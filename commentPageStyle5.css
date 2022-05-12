@@ -65,14 +65,6 @@ h3{
     display:inline-block;
 }
 
-.commentDate{
-    padding-top: 28px;
-    text-align: right;
-    color: #a6a6a6;
-    font-size: 14px;
-    float: right;
-}
-
 .commentUser{
     text-decoration: none;
     font-size: 24px;
@@ -126,6 +118,13 @@ textarea.commentText{
     margin-bottom: 0;
     background-color: #ebebeb;
     box-sizing: border-box;
+}
+
+.commentDate{
+    text-align: right;
+    color: #a6a6a6;
+    font-size: 14px;
+    float: right;
 }
 
 .commentOptions{

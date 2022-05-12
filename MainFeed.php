@@ -115,7 +115,7 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="PostStyle8.css">
-    <link rel="stylesheet" href="NavbarStyle9.css">
+    <link rel="stylesheet" href="NavbarStyle10.css">
     <link rel="stylesheet" href="MainFeedStyle.css">
 </head>
 
@@ -217,6 +217,13 @@ $stmt->close();
                             <a href="?bu=<?php echo $row['Username']?>">Block User</a>
                             <a href="?rp=<?php echo $row['Id']?>">Report Post</a>
                             <a href="?ru=<?php echo $row['Username']?>">Report User</a>
+                            <?php
+                            if ($_SESSION['admin']){
+                                ?>
+                                <a href="AdminPage.php?r=p&b=<?php echo $row['Username']?>">Ban User</a>
+                                    <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="postDate">

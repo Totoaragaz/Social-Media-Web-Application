@@ -116,7 +116,7 @@ $stmt->close();
         const user='<?=$username?>';
         const img=document.getElementById('postimg').value.replace("C:\\fakepath\\",'');
         const text=document.getElementById('posttext').value;
-        window.location.href = 'profilePage.php?profile='+user+'&pi='+img+'&pt='+text;*/
+        window.location.href = 'profilePage.php?profile='+user+'&pi='+img+'&pt='+text;
     }
     function post(){
         const user='<?=$username?>';
@@ -195,7 +195,7 @@ $stmt->close();
                     ?>
                     <form action="profilePage.php?profile=<?php echo $username ?>">
                         <div class="changePic">
-                            <input class="hidden ppic" id="profilepic" type="file" accept="image/*" onchange="changeProfilePic(this.value)">
+                            <input class="hidden ppic" id="profilepic" type="file" accept="image/*" onchange="changeProfilePic(this.value)")>
                             <label class="changePicText" for="profilepic">Change Profile Picture</label>
                         </div>
                     </form>
@@ -210,7 +210,7 @@ $stmt->close();
                 ?>
                     <div class="bioBox">
                         <textarea class="change" id="nb" name="nb" cols="40" rows="5" placeholder="Write a Bio..."><?php echo $bio?></textarea>
-                        <button class="saveButton" id="saveB" onclick="changeBio()">Save</button>
+                        <button class="saveButton" id="saveB" onclick="document.location='profilePage.php?profile=<?php echo $username ?>&nb='+document.getElementById('nb').value">Save</button>
                         <button class="cancelButton" onclick="document.location='profilePage.php?profile=<?php echo $username ?>'">Cancel</button>
                     </div>
 
@@ -298,6 +298,13 @@ $stmt->close();
                                 <a href="?profile=<?php echo $profileUser ?>&bu=<?php echo $profileUser?>">Block User</a>
                                 <a href="?profile=<?php echo $profileUser ?>&rp=<?php echo $row['Id']?>">Report Post</a>
                                 <a href="?profile=<?php echo $profileUser ?>&ru=<?php echo $profileUser?>">Report User</a>
+                                <?php
+                                if ($_SESSION['admin']){
+                                    ?>
+                                    <a href="AdminPage.php?r=p&b=<?php echo $profileUser?>">Ban User</a>
+                                    <?php
+                                }
+                                ?>
                             </div>
                             <?php
                         }
@@ -387,7 +394,6 @@ $stmt->close();
 </div>
 </body>
 </html>
-
 <?php
 }
 ?>

@@ -35,13 +35,17 @@ if (isset($_POST['username'])) {
         $stmt->close();
 
         if ($result->num_rows != 0){
-            //LOG IN
-            $_SESSION["username"]=$username;
-            $_SESSION["friendsonly"]=0;
-            if (checkIfAdmin($username,$mysqli)) $_SESSION['admin']=true;
-            else $_SESSION['admin']=false;
-            header("Location:profilePage.php?profile=".$username);
-            exit();
+            $reason=isBanned($username,$mysqli);
+            if ($reason!="good") header("Location:loginPage.php?error=User was banned for $reason");
+            else {
+                //LOG IN
+                $_SESSION["username"]=$username;
+                $_SESSION["friendsonly"]=0;
+                if (checkIfAdmin($username,$mysqli)) $_SESSION['admin']=true;
+                else $_SESSION['admin']=false;
+                header("Location:profilePage.php?profile=".$username);
+                exit();
+            }
         }
         else {
             header("Location:loginPage.php?error=Incorrect username or password.");

@@ -51,7 +51,7 @@ $pid=$_GET['p'];
         if (isset($_GET['rp'])){
             reportPost($username,$_GET['rp'],$mysqli);
         }
-        if (isset($_GET['de']) and $postResult['Username']==$username){
+        if (isset($_GET['de']) and ($postResult['Username']==$username or $_SESSION['admin'])){
             deletePost($_GET['de'],$mysqli);
         }
         if (isset($_GET['dc'])){
@@ -97,7 +97,8 @@ where Username1=?
 union
 SELECT Username1 from blocked
 where Username2=?
-)");
+)
+order by time");
     $stmt->bind_param("iss",$pid,$username,$username);
     $stmt->execute();
     $commentsResult = $stmt->get_result();
@@ -154,8 +155,8 @@ where Username2=?
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="PostStyle8.css">
-    <link rel="stylesheet" href="NavbarStyle9.css">
-    <link rel="stylesheet" href="commentPageStyle4.css">
+    <link rel="stylesheet" href="NavbarStyle10.css">
+    <link rel="stylesheet" href="commentPageStyle5.css">
 </head>
 
 <body>
@@ -215,6 +216,14 @@ where Username2=?
                     <a href="MainFeed.php?bu=<?php echo $postResult['Username']?>">Block User</a>
                     <a href="?p=<?php echo $pid?>&rp=<?php echo $pid?>">Report Post</a>
                     <a href="?p=<?php echo $pid?>&ru=<?php echo $postResult['Username']?>">Report User</a>
+                    <?php
+                    if ($_SESSION['admin']){
+                        ?>
+                        <a href="?profile=<?php echo $postResult['Username'] ?>&de=<?php echo $row['Id']?>">Delete Post</a>
+                        <a href="AdminPage.php?r=p&b=<?php echo $postResult['Username']?>">Ban User</a>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <?php
                 }
@@ -349,10 +358,20 @@ where Username2=?
                                 <a href="?p=<?php echo $pid?>&bu=<?php echo $row['Username']?>">Block User</a>
                                 <a href="?p=<?php echo $pid?>&rc=<?php echo $row['cid']?>">Report Comment</a>
                                 <a href="?p=<?php echo $pid?>&ru=<?php echo $row['Username']?>">Report User</a>
+                                <?php
+                                if ($_SESSION['admin']){
+                                    ?>
+                                    <a href="AdminPage.php?r=p&b=<?php echo $row['Username']?>">Ban User</a>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         <?php
                         }
                         ?>
+                        <div class="commentDate">
+                            <?php echo $row['time']?>
+                        </div>
                     </div>
                     <div class="commentBody">
                         <div class="commentUser">
@@ -423,7 +442,6 @@ where Username2=?
                                 <?php echo getCommentLikes($row['cid'],$mysqli) ?>
                             </div>
                         </div>
-                    </div>
                 </div>
             <?php
             }

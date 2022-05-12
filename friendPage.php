@@ -50,6 +50,8 @@ where Username1=?
 union
 SELECT Username1 from blocked
 where Username2=?
+union
+SELECT Username from banned
 )");
 $stmt->bind_param("sssssss", $username,$username,$username,$username,$username,$username,$username);
 $stmt->execute();

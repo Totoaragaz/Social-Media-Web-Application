@@ -106,7 +106,7 @@
     width:9vw;
     height:50px;
     background-color: #bd6b15;
-    border: none;
+    border: 3px solid #d7842c;
     color: #ffd07d;
     padding: 20px 10px 10px 10px;
     text-align: center;
@@ -117,13 +117,10 @@
     transition-duration: 0.2s;
     cursor:pointer;
     margin-top: 70px;
-    margin-bottom: 20px;
 }
 
 .navbarButton.multiple{
     margin-top:0;
-    width: inherit;
-    height: inherit;
 }
 
 .navbarButton:hover{
