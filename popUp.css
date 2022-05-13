@@ -1,0 +1,30 @@
+.popUpBox{
+    display: block;
+    position: fixed;
+    height:40px;
+    bottom:5%;
+    width:auto;
+    left:30%;
+    right:30%;
+    background-color: #bd6b15;
+    z-index: 100;
+    border: #d7842c 4px solid;
+    border-radius: 20px;
+    padding: 5px 10px;
+    animation: popUpAnimation linear 3s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes popUpAnimation {
+    0% {opacity:0;}
+    10%{opacity: 1;}
+    80%{opacity:1;}
+    100% {opacity:0;}
+}
+
+.popUpText{
+    margin-top:8px;
+    text-align: center;
+    font-size: 20px;
+    color:#ffd07d;
+}

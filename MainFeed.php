@@ -8,8 +8,10 @@ session_start();
 $username = $_SESSION['username'];
 $friendsOnly = $_SESSION['friendsonly'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
 $refresh=(isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0');
+$popup="";
 if (!$refresh) {
     if (isset($_GET['a'])) {
         if ($_GET["a"] == "l") {
@@ -19,13 +21,19 @@ if (!$refresh) {
         }
     }
     if (isset($_GET['bu'])){
-        if ($_GET['bu']!=$username) blockUser($username,$_GET['bu'],$mysqli);
+        if ($_GET['bu']!=$username) {
+            blockUser($username,$_GET['bu'],$mysqli);
+            $blocked=$_GET['bu'];
+            $popup="$blocked was blocked";
+        }
     }
     if (isset($_GET['ru'])){
         reportUser($username,$_GET['ru'],$mysqli);
+        $popup="Thank you for your report! Our admins will have a look.";
     }
     if (isset($_GET['rp'])){
         reportPost($username,$_GET['rp'],$mysqli);
+        $popup="Thank you for your report! Our admins will have a look.";
     }
     if (isset($_GET['fo'])){
         if ($_SESSION['friendsonly']==0){
@@ -114,9 +122,17 @@ $stmt->close();
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="PostStyle8.css">
-    <link rel="stylesheet" href="NavbarStyle10.css">
-    <link rel="stylesheet" href="MainFeedStyle.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="PostStyleLight.css">
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="MainFeedStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="PostStyleDark.css">
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="MainFeedStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>
@@ -164,6 +180,11 @@ $stmt->close();
         }
         ?>
 </div>
+<div class="popUpBox" style="display: <?php if ($popup=="") echo "none"; else echo "block"; ?>">
+    <div class="popUpText">
+        <?php echo $popup ?>
+    </div>
+</div>
 <div class="middle">
     <?php
     if ($postsResult->num_rows==0){
@@ -171,7 +192,7 @@ $stmt->close();
         <div class="noFriendsText">
             <p> Looks like you don't have friends or they </p>
             <p>haven't posted anything yet :(</p>
-            <a href="friendPage.php">Add friends</a>
+            <a href="friendPage.php" style="color:#d7842c">Add friends</a>
         </div>
         <?php
     }

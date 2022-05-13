@@ -7,6 +7,7 @@ if ($mysqli->connect_error){
 session_start();
 $username = $_SESSION['username'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
 if (!$_SESSION['admin']) header("Location:https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
@@ -118,11 +119,19 @@ $stmt->close();
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="PostStyle8.css">
-    <link rel="stylesheet" href="commentPageStyle4.css">
-    <link rel="stylesheet" href="FriendStyle4.css">
-    <link rel="stylesheet" href="NavbarStyle10.css">
-    <link rel="stylesheet" href="AdminPageStyle2.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="PostStyleLight.css">
+        <link rel="stylesheet" href="commentPageStyleLight.css">
+        <link rel="stylesheet" href="FriendStyleLight.css">
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="AdminPageStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="PostStyleDark.css">
+        <link rel="stylesheet" href="commentPageStyleDark.css">
+        <link rel="stylesheet" href="FriendStyleDark.css">
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="AdminPageStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>

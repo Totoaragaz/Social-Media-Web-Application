@@ -1,0 +1,37 @@
+html{
+    background: #2e2e2e;
+    font-family: Arial, sans-serif;
+    margin-bottom: 0;
+}
+
+::-webkit-scrollbar{
+    width:0;
+    background:transparent;
+}
+
+body {
+    margin:0;
+    padding:0;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.middle{
+    margin-right: auto;
+    margin-left: auto;
+    padding-top: 100px;
+}
+.noFriendsText{
+    padding-top: 150px;
+    font-size: 30px;
+    color: #868686;
+    text-align: center;
+}
+
+.endOfFeed{
+    font-size: 24px;
+    color: #5d5d5d;
+    text-align: center;
+    padding-bottom: 50px;
+}

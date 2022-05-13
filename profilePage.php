@@ -7,6 +7,7 @@ if ($mysqli->connect_error){
 session_start();
 $username = $_SESSION['username'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
 if (!isset($_GET['profile'])) echo 'Please stop messing with the URL :(';
 else {
@@ -15,6 +16,7 @@ $profileUser=$_GET['profile'];
 
     $posttext="";
     $postimg="";
+    $popup="";
     $refresh=isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
     if (!$refresh) {
         if (isset($_GET['a'])) {
@@ -42,13 +44,19 @@ $profileUser=$_GET['profile'];
             deletePost($_GET['d'],$mysqli);
         }
         if (isset($_GET['bu'])){
-            if ($_GET['bu']!=$username) blockUser($username,$_GET['bu'],$mysqli);
+            if ($_GET['bu']!=$username) {
+                blockUser($username,$_GET['bu'],$mysqli);
+                $blocked=$_GET['bu'];
+                $popup="$blocked was blocked";
+            }
         }
         if (isset($_GET['ru'])){
             reportUser($username,$_GET['ru'],$mysqli);
+            $popup="Thank you for your report! Our admins will have a look.";
         }
         if (isset($_GET['rp'])){
             reportPost($username,$_GET['rp'],$mysqli);
+            $popup="Thank you for your report! Our admins will have a look.";
         }
     }
     if (isset($_GET['pi']) and isset($_GET['pt']) and !isset($_GET['a'])){
@@ -138,9 +146,17 @@ $stmt->close();
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="PostStyle8.css">
-    <link rel="stylesheet" href="NavbarStyle9.css">
-    <link rel="stylesheet" href="profilePageStyle6.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="PostStyleLight.css">
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="profilePageStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="PostStyleDark.css">
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="profilePageStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>
@@ -184,6 +200,12 @@ $stmt->close();
     </div>
 </div>
 <br>
+</div>
+<div class="popUpBox" style="display: <?php if ($popup=="") echo "none"; else echo "block"; ?>">
+    <div class="popUpText">
+        <?php echo $popup ?>
+    </div>
+</div>
 
     <div class="left">
         <div class="profilebar">
@@ -236,6 +258,12 @@ $stmt->close();
     <div class="right">
         <br>
         <?php
+        if (blockeduser($profileUser,$username,$mysqli)) { ?>
+            <div class="blockedText">
+                <?php echo $profileUser ?> has blocked you.
+            </div>
+        <?php }
+        else{
         if ($profileUser==$username){
             ?>
             <div class="post">
@@ -388,6 +416,7 @@ $stmt->close();
                 </div>
             </div>
         <?php
+        }
         }
         ?>
     </div>

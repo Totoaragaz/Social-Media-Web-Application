@@ -7,23 +7,30 @@ if ($mysqli->connect_error){
 session_start();
 $username = $_SESSION['username'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
+$popup="";
 $refresh=isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
 if (!$refresh) {
     if (isset($_GET['ad'])){
         sendFriendRequest($username,$_GET['ad'],$mysqli);
+        $popup="Friend request sent.";
     }
     if (isset($_GET['ac'])){
         acceptFriendRequest($_GET['ac'],$username,$mysqli);
+        $popup="Friend request accepted.";
     }
     if (isset($_GET['de'])){
         declineFriendRequest($_GET['de'],$username,$mysqli);
     }
     if (isset($_GET['b'])){
         blockUser($username,$_GET['b'],$mysqli);
+        $blocked=$_GET['b'];
+        $popup="$blocked was blocked";
     }
     if (isset($_GET['r'])){
         removeFriend($username,$_GET['r'],$mysqli);
+        $popup="Friend was removed.";
     }
     if (isset($_GET['w'])){
         declineFriendRequest($username,$_GET['w'],$mysqli);
@@ -126,9 +133,17 @@ $stmt->close();
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="NavbarStyle9.css">
-    <link rel="stylesheet" href="FriendStyle4.css">
-    <link rel="stylesheet" href="FriendPageStyle3.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="FriendStyleLight.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="FriendPageStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="FriendStyleDark.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="FriendPageStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>
@@ -158,6 +173,12 @@ $stmt->close();
             }
             ?>
         </div>
+    </div>
+</div>
+</div>
+<div class="popUpBox" style="display: <?php if ($popup=="") echo "none"; else echo "block"; ?>">
+    <div class="popUpText">
+        <?php echo $popup ?>
     </div>
 </div>
 <div class="container">

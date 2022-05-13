@@ -7,6 +7,7 @@ if ($mysqli->connect_error){
 session_start();
 $username = $_SESSION['username'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
 
 if (!isset($_GET['p'])) echo "Please stop messing with the URL :(";
@@ -20,6 +21,7 @@ $pid=$_GET['p'];
     $stmt->close();
     $postResult=$postResult->fetch_assoc();
 
+    $popup="";
     $commtext="";
     $commimg="";
     $refresh=isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
@@ -40,25 +42,33 @@ $pid=$_GET['p'];
             }
             else if ($_GET['a']=="p" and isset($_GET['ct']) and isset($_GET['ci'])){
                 makeComment($pid,$username,$_GET['ct'],$_GET['ci'],$mysqli);
+                $popup="Comment was posted.";
             }
         }
         if (isset($_GET['bu'])){
             blockUser($username,$_GET['bu'],$mysqli);
+            $blocked=$_GET['bu'];
+            $popup="$blocked was blocked.";
         }
         if (isset($_GET['ru'])){
             reportUser($username,$_GET['ru'],$mysqli);
+            $popup="Thank you for your report! Our admins will have a look.";
         }
         if (isset($_GET['rp'])){
             reportPost($username,$_GET['rp'],$mysqli);
+            $popup="Thank you for your report! Our admins will have a look.";
         }
         if (isset($_GET['de']) and ($postResult['Username']==$username or $_SESSION['admin'])){
             deletePost($_GET['de'],$mysqli);
+            $popup="Post was deleted.";
         }
         if (isset($_GET['dc'])){
             deleteComment($_GET['dc'],$mysqli);
+            $popup="Comment was deleted.";
         }
         if (isset($_GET['rc'])){
             reportComment($username,$_GET['rc'],$mysqli);
+            $popup="Thank you for your report! Our admins will have a look.";
         }
     }
     if (isset($_GET['ci']) and isset($_GET['ct']) and !isset($_GET['a'])){
@@ -154,9 +164,17 @@ order by time");
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="PostStyle8.css">
-    <link rel="stylesheet" href="NavbarStyle10.css">
-    <link rel="stylesheet" href="commentPageStyle5.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="PostStyleLight.css">
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="commentPageStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="PostStyleDark.css">
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="commentPageStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>
@@ -189,6 +207,12 @@ order by time");
         </div>
     <div class="navbarButton" onclick="location.href='MainFeed.php'">
         Back to Feed
+    </div>
+</div>
+</div>
+<div class="popUpBox" style="display: <?php if ($popup=="") echo "none"; else echo "block"; ?>">
+    <div class="popUpText">
+        <?php echo $popup ?>
     </div>
 </div>
 <div class="middle">
@@ -369,9 +393,9 @@ order by time");
                         <?php
                         }
                         ?>
-                        <div class="commentDate">
-                            <?php echo $row['time']?>
-                        </div>
+                    </div>
+                    <div class="commentDate">
+                        <?php echo $row['time']?>
                     </div>
                     <div class="commentBody">
                         <div class="commentUser">
@@ -383,7 +407,7 @@ order by time");
                             }
                             else{
                             ?>
-                                <a href="profilePage.php?profile=<?php echo $row['Username'] ?>" style="text-decoration: none; color: #6e6e6e"><?php echo $row['Username']?></a>
+                                <a class="commentUsername" href="profilePage.php?profile=<?php echo $row['Username'] ?>"><?php echo $row['Username']?></a>
                             <?php
                             }
                             ?>

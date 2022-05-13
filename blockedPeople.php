@@ -7,11 +7,15 @@ if ($mysqli->connect_error){
 session_start();
 $username = $_SESSION['username'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
 $refresh=isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+$popup="";
 if (!$refresh){
     if (isset($_GET['ub'])){
         unblockUser($username,$_GET['ub'],$mysqli);
+        $unblocked=$_GET['ub'];
+        $popup="$unblocked was blocked";
     }
 }
 
@@ -20,11 +24,8 @@ SELECT Username,ProfilePicture FROM profile
 WHERE Username!=? and Username in (
 Select Username2 from blocked
 where Username1=?
-union
-SELECT Username1 from blocked
-where Username2=?
 )");
-$stmt->bind_param("sss", $username,$username,$username);
+$stmt->bind_param("ss", $username,$username);
 $stmt->execute();
 $blockedResult = $stmt->get_result();
 $stmt->close();
@@ -61,9 +62,17 @@ $stmt->close();
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="FriendStyle4.css">
-    <link rel="stylesheet" href="NavbarStyle9.css">
-    <link rel="stylesheet" href="blockedPeopleStyle.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="FriendStyleLight.css">
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="blockedPeopleStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="FriendStyleDark.css">
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="popUp.css">
+        <link rel="stylesheet" href="blockedPeopleStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>
@@ -95,14 +104,20 @@ $stmt->close();
         </div>
     </div>
 </div>
+</div>
+<div class="popUpBox" style="display: <?php if ($popup=="") echo "none"; else echo "block"; ?>">
+    <div class="popUpText">
+        <?php echo $popup ?>
+    </div>
+</div>
 <div class="middle">
     <?php
     if ($blockedResult->num_rows==0){
         ?>
-        <div class="noFriendsText">
+        <div class="noBlockedText">
             <p> Looks like you have not blocked </p>
             <p> anyone yet :)</p>
-            <a href="friendPage.php">Block People</a>
+            <a href="friendPage.php" style="color:#d7842c">Block People</a>
         </div>
         <?php
     }

@@ -8,7 +8,19 @@ if ($mysqli->connect_error){
 session_start();
 $username = $_SESSION['username'];
 require_once 'Functions.php';
+$darkmode=getDarkMode($username,$mysqli);
 
+
+if (isset($_GET['d'])){
+    if ($_GET['d']==0) {
+        turnOffDarkMode($username,$mysqli);
+        $darkmode=0;
+    }
+    else {
+        turnOnDarkMode($username,$mysqli);
+        $darkmode=1;
+    }
+}
 ?>
 <!DOCTYPE html>
 
@@ -30,8 +42,13 @@ require_once 'Functions.php';
     <title>The Rock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="NavbarStyle9.css">
-    <link rel="stylesheet" href="DarkModePageStyle.css">
+    <?php if ($darkmode==0){ ?>
+        <link rel="stylesheet" href="NavbarStyleLight.css">
+        <link rel="stylesheet" href="DarkModePageStyleLight.css">
+    <?php } else { ?>
+        <link rel="stylesheet" href="NavbarStyleDark.css">
+        <link rel="stylesheet" href="DarkModePageStyleDark.css">
+    <?php } ?>
 </head>
 
 <body>
@@ -64,12 +81,24 @@ require_once 'Functions.php';
     </div>
 </div>
 <div class="middle">
+    <?php if ($darkmode==0){ ?>
+        <div class="weaklingText">
+            Just so you know, if you press this button you're a weakling.
+        </div>
+        <div class="darkModeButton" onclick="document.location.href='DarkModePage.php?d=1'">
+            Turn on Dark Mode
+        </div>
+    <?php }
+    else{ ?>
     <div class="weaklingText">
-        Just so you know, if you press this button you're a weakling.
+        Just so you know, if you don't press this button you're a terrible person.
     </div>
-    <div class="darkModeButton">
-        Toggle Dark Mode
+    <div class="darkModeButton" onclick="document.location.href='DarkModePage.php?d=0'">
+        Turn off Dark Mode
     </div>
+    <?php
+    }
+    ?>
 </div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-function likePost($likeValue,$postId,$username,$mysqli)
+function likePost($likeValue,$postId,$username,$mysqli): void
 {
     try{
         if ($likeValue==0){
@@ -26,7 +26,7 @@ function likePost($likeValue,$postId,$username,$mysqli)
     }
 }
 
-function dislikePost($likeValue,$postId,$username,$mysqli)
+function dislikePost($likeValue,$postId,$username,$mysqli): void
 {
     try{
         if ($likeValue==0){
@@ -54,7 +54,7 @@ function dislikePost($likeValue,$postId,$username,$mysqli)
     }
 }
 
-function blockUser($blocker,$blocked,$mysqli)
+function blockUser($blocker,$blocked,$mysqli): void
 {
     try {
         $stmt = $mysqli->prepare("Select * from blocked where Username1=? and Username2=?");
@@ -140,14 +140,14 @@ function blockUser($blocker,$blocked,$mysqli)
     }
 }
 
-function unblockUser($blocker,$blocked,$mysqli){
+function unblockUser($blocker,$blocked,$mysqli): void{
         $stmt = $mysqli->prepare("DELETE FROM blocked WHERE Username1=? and Username2=?");
         $stmt->bind_param("ss",$blocker,$blocked);
         $stmt->execute();
         $stmt->close();
 }
 
-function reportUser($reporter,$reported,$mysqli){
+function reportUser($reporter,$reported,$mysqli): void{
     try {
         $stmt = $mysqli->prepare("Select * from reportedusers where reporter=? and reported=?");
         $stmt->bind_param("ss", $reporter, $reported);
@@ -164,7 +164,7 @@ function reportUser($reporter,$reported,$mysqli){
     }
 }
 
-function reportPost($reporter,$reported,$mysqli){
+function reportPost($reporter,$reported,$mysqli): void{
     try{
         $stmt = $mysqli->prepare("Select * from reportedposts where reporter=? and reported=?");
         $stmt->bind_param("si", $reporter, $reported);
@@ -181,7 +181,7 @@ function reportPost($reporter,$reported,$mysqli){
     }
 }
 
-function reportComment($reporter,$reported,$mysqli){
+function reportComment($reporter,$reported,$mysqli): void{
     try{
         $stmt = $mysqli->prepare("Select * from reportedcomments where reporter=? and reported=?");
         $stmt->bind_param("si", $reporter, $reported);
@@ -199,7 +199,7 @@ function reportComment($reporter,$reported,$mysqli){
     }
 }
 
-function sendFriendRequest($sender, $receiver, $mysqli){
+function sendFriendRequest($sender, $receiver, $mysqli): void{
     try {
         $stmt = $mysqli->prepare("Select * from friendrequests where Username1=? and Username2=? union
                                 Select * from friends where Username1=? and Username2=?");
@@ -218,7 +218,7 @@ function sendFriendRequest($sender, $receiver, $mysqli){
     }
 }
 
-function acceptFriendRequest($sender, $receiver, $mysqli){
+function acceptFriendRequest($sender, $receiver, $mysqli): void{
     try{
         $stmt = $mysqli->prepare("Select * from friends where Username1=? and Username2=? union
                                 Select * from friends where Username1=? and Username2=?");
@@ -241,7 +241,7 @@ function acceptFriendRequest($sender, $receiver, $mysqli){
     }
 }
 
-function declineFriendRequest($sender, $receiver, $mysqli){
+function declineFriendRequest($sender, $receiver, $mysqli): void{
     try{
         $stmt = $mysqli->prepare("Select * from friends where Username1=? and Username2=? union
                                 Select * from friends where Username1=? and Username2=?");
@@ -260,7 +260,7 @@ function declineFriendRequest($sender, $receiver, $mysqli){
     }
 }
 
-function removeFriend($remover, $removed, $mysqli){
+function removeFriend($remover, $removed, $mysqli): void{
         $stmt = $mysqli->prepare("Select * from friends where Username1=? and Username2=? union
                                 Select * from friends where Username1=? and Username2=?");
         $stmt->bind_param("ssss", $remover, $removed, $removed, $remover);
@@ -278,28 +278,28 @@ function removeFriend($remover, $removed, $mysqli){
         $stmt->close();
 }
 
-function changeProfilePic($username,$newpic,$mysqli){
+function changeProfilePic($username,$newpic,$mysqli): void{
     $stmt = $mysqli->prepare("Update profile set ProfilePicture=? where Username=?");
     $stmt->bind_param("ss",$newpic,$username);
     $stmt->execute();
     $stmt->close();
 }
 
-function changeBio($username, $newbio,$mysqli){
+function changeBio($username, $newbio,$mysqli): void{
     $stmt = $mysqli->prepare("Update profile set Bio=? where Username=?");
     $stmt->bind_param("ss",$newbio,$username);
     $stmt->execute();
     $stmt->close();
 }
 
-function makePost($username,$caption,$image,$mysqli){
+function makePost($username,$caption,$image,$mysqli): void{
     $stmt = $mysqli->prepare("insert into posts (Username,Text,Image) values (?,?,?)");
     $stmt->bind_param("sss",$username,$caption,$image);
     $stmt->execute();
     $stmt->close();
 }
 
-function deletePost($pid,$mysqli){
+function deletePost($pid,$mysqli): void{
     $stmt = $mysqli->prepare("Select cid from comments where pid=?");
     $stmt->bind_param("i",$pid);
     $stmt->execute();
@@ -322,7 +322,7 @@ function deletePost($pid,$mysqli){
     $stmt->close();
 }
 
-function getPostLikes($pid,$mysqli){
+function getPostLikes($pid,$mysqli): int{
     $stmt = $mysqli->prepare("select count(*) as likes from likedposts where pid=? and likeValue=1");
     $stmt->bind_param("i", $pid);
     $stmt->execute();
@@ -338,7 +338,7 @@ function getPostLikes($pid,$mysqli){
     return $likes['likes']-$dislikes['dislikes'];
 }
 
-function getCommentLikes($cid,$mysqli){
+function getCommentLikes($cid,$mysqli): int{
     $stmt = $mysqli->prepare("select count(*) as likes from likedcomments where cid=? and likeValue=1");
     $stmt->bind_param("i", $cid);
     $stmt->execute();
@@ -354,7 +354,7 @@ function getCommentLikes($cid,$mysqli){
     return $likes['likes']-$dislikes['dislikes'];
 }
 
-function likeComment($likeValue,$cid,$username,$mysqli)
+function likeComment($likeValue,$cid,$username,$mysqli): void
 {
     if ($likeValue==0){
         $stmt = $mysqli->prepare("INSERT INTO likedcomments values (?,?,1)");
@@ -376,7 +376,7 @@ function likeComment($likeValue,$cid,$username,$mysqli)
     }
 }
 
-function dislikeComment($likeValue,$cid,$username,$mysqli)
+function dislikeComment($likeValue,$cid,$username,$mysqli): void
 {
     if ($likeValue==0){
         $stmt = $mysqli->prepare("INSERT INTO likedcomments values (?,?,-1)");
@@ -399,7 +399,7 @@ function dislikeComment($likeValue,$cid,$username,$mysqli)
     }
 }
 
-function deleteComment($cid,$mysqli){
+function deleteComment($cid,$mysqli): void{
     $stmt = $mysqli->prepare("delete from likedcomments where cid=?");
     $stmt->bind_param("i",$cid);
     $stmt->execute();
@@ -414,7 +414,7 @@ function deleteComment($cid,$mysqli){
     $stmt->close();
 }
 
-function makeComment($pid,$username,$comment,$image,$mysqli){
+function makeComment($pid,$username,$comment,$image,$mysqli): void{
     $stmt = $mysqli->prepare("insert into comments (pid,Username,Text,Image) values (?,?,?,?)");
     $stmt->bind_param("isss",$pid,$username,$comment,$image);
     $stmt->execute();
@@ -438,7 +438,7 @@ function checkIfAdmin($username,$mysqli):bool{
     return false;
 }
 
-function banUser($username,$reason,$mysqli){
+function banUser($username,$reason,$mysqli): void{
     try {
         $stmt = $mysqli->prepare("Select * from banned where Username=?");
         $stmt->bind_param("s", $username);
@@ -500,21 +500,21 @@ function banUser($username,$reason,$mysqli){
     }
 }
 
-function dismissUser($username,$mysqli){
+function dismissUser($username,$mysqli): void{
     $stmt = $mysqli->prepare("DELETE FROM reportedusers where reported=?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->close();
 }
 
-function dismissPost($id,$mysqli){
+function dismissPost($id,$mysqli): void{
     $stmt = $mysqli->prepare("DELETE FROM reportedposts where reported=?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $stmt->close();
 }
 
-function dismissComment($id,$mysqli){
+function dismissComment($id,$mysqli): void{
     $stmt = $mysqli->prepare("DELETE FROM reportedcomments where reported=?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -550,4 +550,28 @@ function isBanned($username,$mysqli) {
         $reason=$banned->fetch_assoc();
         return $reason['reason'];
     }
+}
+
+function turnOnDarkMode($username,$mysqli): void{
+    $stmt= $mysqli->prepare("UPDATE profile set darkmode=1 where Username=?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function turnOffDarkMode($username,$mysqli): void{
+    $stmt= $mysqli->prepare("UPDATE profile set darkmode=0 where Username=?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->close();
+}
+
+function blockeduser($blocker,$blocked,$mysqli): bool{
+    $stmt= $mysqli->prepare("Select * from blocked where Username1=? and Username2=?");
+    $stmt->bind_param("ss", $blocker,$blocked);
+    $stmt->execute();
+    $result=$stmt->get_result();
+    $stmt->close();
+    if ($result->num_rows==0) return false;
+    else return true;
 }
