@@ -281,7 +281,7 @@ $stmt->close();
                 <div class="likeBar">
                     <button class="postButton" onclick="post()">Post</button>
                     <div class="uploadimg">
-                        <img class="uploadimgbutton" src="SiteSprites/image.png" height="140%" width="140%">
+                        <img class="uploadimgbutton" src="SiteSprites/image<?php if ($darkmode==1) echo "Dark"?>.png" height="140%" width="140%">
                         <form action="profilePage.php?profile=<?php echo $username ?>">
                             <input class="hiddenimg1" id="postimg" type="file" accept="image/*" onchange="uploadImage()">
                         </form>
@@ -318,7 +318,7 @@ $stmt->close();
                         <a class="profileLink" href="profilePage.php?profile=<?php echo $profileUser  ?>"><?php echo $profileUser ?></a>
                     </div>
                     <div class="postOptions">
-                        <img src="SiteSprites/options.png">
+                        <img src="SiteSprites/options<?php if ($darkmode==1) echo "Dark"?>.png">
                         <?php
                         if ($username!=$profileUser){
                         ?>
@@ -368,10 +368,10 @@ $stmt->close();
                     <?php
                         if ($likeValue==0){ ?>
                             <div class="likeButton">
-                                <a href="?profile=<?php echo $profileUser?>&a=l&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/like.png"></a>
+                                <a href="?profile=<?php echo $profileUser?>&a=l&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/like<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <div class="likeButton">
-                                <a href="?profile=<?php echo $profileUser?>&a=d&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/dislike.png"></a>
+                                <a href="?profile=<?php echo $profileUser?>&a=d&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/dislike<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <?php
                         }
@@ -381,14 +381,14 @@ $stmt->close();
                                 <a href="?profile=<?php echo $profileUser?>&a=l&p=<?php echo $row['Id']?>&v=1"><img src="SiteSprites/like_pressed.png"></a>
                             </div>
                             <div class="likeButton">
-                                <a href="?profile=<?php echo $profileUser?>&a=d&p=<?php echo $row['Id']?>&v=1"><img src="SiteSprites/dislike.png"></a>
+                                <a href="?profile=<?php echo $profileUser?>&a=d&p=<?php echo $row['Id']?>&v=1"><img src="SiteSprites/dislike<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <?php
                         }
                         else {
                             ?>
                             <div class="likeButton">
-                                <a href="?profile=<?php echo $profileUser?>&a=l&p=<?php echo $row['Id']?>&v=-1"><img src="SiteSprites/like.png"></a>
+                                <a href="?profile=<?php echo $profileUser?>&a=l&p=<?php echo $row['Id']?>&v=-1"><img src="SiteSprites/like<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <div class="likeButton">
                                 <a href="?profile=<?php echo $profileUser?>&a=d&p=<?php echo $row['Id']?>&v=-1"><img src="SiteSprites/dislike_pressed.png"></a>

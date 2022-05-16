@@ -233,7 +233,7 @@ $stmt->close();
                         <a class="profileLink" href="profilePage.php?profile=<?php echo $row['Username'] ?>"><?php echo $row['Username']?></a>
                     </div>
                     <div class="postOptions">
-                        <img src="SiteSprites/options.png">
+                        <img src="SiteSprites/options<?php if ($darkmode==1) echo "Dark"?>.png">
                         <div class="postOptions-content">
                             <a href="?bu=<?php echo $row['Username']?>">Block User</a>
                             <a href="?rp=<?php echo $row['Id']?>">Report Post</a>
@@ -270,10 +270,10 @@ $stmt->close();
                     <?php
                         if ($likeValue==0){ ?>
                             <div class="likeButton">
-                                <a href="?a=l&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/like.png"></a>
+                                <a href="?a=l&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/like<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <div class="likeButton">
-                                <a href="?a=d&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/dislike.png"></a>
+                                <a href="?a=d&p=<?php echo $row['Id']?>&v=0"><img src="SiteSprites/dislike<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <?php
                         }
@@ -283,14 +283,14 @@ $stmt->close();
                                 <a href="?a=l&p=<?php echo $row['Id']?>&v=1"><img src="SiteSprites/like_pressed.png"></a>
                             </div>
                             <div class="likeButton">
-                                <a href="?a=d&p=<?php echo $row['Id']?>&v=1"><img src="SiteSprites/dislike.png"></a>
+                                <a href="?a=d&p=<?php echo $row['Id']?>&v=1"><img src="SiteSprites/dislike<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <?php
                         }
                         else {
                             ?>
                             <div class="likeButton">
-                                <a href="?a=l&p=<?php echo $row['Id']?>&v=-1"><img src="SiteSprites/like.png"></a>
+                                <a href="?a=l&p=<?php echo $row['Id']?>&v=-1"><img src="SiteSprites/like<?php if ($darkmode==1) echo "Dark"?>.png"></a>
                             </div>
                             <div class="likeButton">
                                 <a href="?a=d&p=<?php echo $row['Id']?>&v=-1"><img src="SiteSprites/dislike_pressed.png"></a>
