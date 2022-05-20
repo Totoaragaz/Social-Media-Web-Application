@@ -64,7 +64,7 @@ if (isset($_GET['d'])){
     } ?>
     <a class="notactive" href="profilePage.php?profile=<?php echo $username ?>">Profile</a>
     <a class="notactive" href="friendPage.php">Friends</a>
-    <a class="logout" href="index.php">Log out</a>
+    <a class="logout" href="logout.php">Log out</a>
     <div class="navbaroptions">
         Options
         <div class="navbaroptions-content">
