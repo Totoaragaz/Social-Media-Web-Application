@@ -70,6 +70,14 @@ $pid=$_GET['p'];
             reportComment($username,$_GET['rc'],$mysqli);
             $popup="Thank you for your report! Our admins will have a look.";
         }
+        if (isset($_GET['e'])){
+            if ($_GET['e']=='e'){
+                $popup="Comment can't be empty.";
+            }
+            if ($_GET['e']=='l'){
+                $popup="Comment can't be more than 255 characters long.";
+            }
+        }
     }
     if (isset($_GET['ci']) and isset($_GET['ct']) and !isset($_GET['a'])){
         $commtext=$_GET['ct'];
@@ -148,6 +156,7 @@ order by time");
         const pid='<?=$pid?>';
         const img=document.getElementById('commimg').value.replace("C:\\fakepath\\",'');
         const text=document.getElementById('commtext').value;
+        if (text.length>255) window.location.href='commentPage.php?p='+pid+'$ci='+img;
         window.location.href = 'commentPage.php?p='+pid+'&ci='+img+'&ct='+text;
     }
 
@@ -155,7 +164,9 @@ order by time");
         const pid='<?=$pid?>';
         const img='<?=$commimg?>';
         const text=document.getElementById('commtext').value;
-        window.location.href = 'commentPage.php?p='+pid+'&a=p'+'&ci='+img+'&ct='+text;
+        if (text==="") window.location.href='commentPage.php?p='+pid+'&e=e';
+        else if (text.length>255) window.location.href = 'commentPage.php?p='+pid+'&e=l';
+        else window.location.href = 'commentPage.php?p='+pid+'&a=p'+'&ci='+img+'&ct='+text;
     }
 </script>
 

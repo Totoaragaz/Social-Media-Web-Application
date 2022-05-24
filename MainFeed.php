@@ -44,37 +44,61 @@ if (!$refresh) {
     }
 }
 if ($friendsOnly==1){
-    $stmt = $mysqli->prepare("SELECT Id,Username,Text,Image,time
-    FROM posts
-    WHERE username!=? and username not in (
-    Select Username2 from blocked
-    where Username1=?
-    union
-    SELECT Username1 from blocked
-    where Username2=?
-       )
-    and username in (
-    Select Username2 from friends
-    where Username1=?
-    union
-    SELECT Username1 from friends
-    where Username2=?
-    )
-    ORDER BY time desc");
-    $stmt->bind_param('sssss',$username,$username,$username,$username,$username);
+    if ($_SESSION['admin']){
+        $stmt = $mysqli->prepare("SELECT Id,Username,Text,Image,time
+        FROM posts
+        WHERE username!=? and username in (
+        Select Username2 from friends
+        where Username1=?
+        union
+        SELECT Username1 from friends
+        where Username2=?
+        )
+        ORDER BY time desc");
+        $stmt->bind_param('sss', $username, $username, $username);
+    }
+    else {
+        $stmt = $mysqli->prepare("SELECT Id,Username,Text,Image,time
+        FROM posts
+        WHERE username!=? and username not in (
+        Select Username2 from blocked
+        where Username1=?
+        union
+        SELECT Username1 from blocked
+        where Username2=?
+           )
+        and username in (
+        Select Username2 from friends
+        where Username1=?
+        union
+        SELECT Username1 from friends
+        where Username2=?
+        )
+        ORDER BY time desc");
+        $stmt->bind_param('sssss', $username, $username, $username, $username, $username);
+    }
 }
 else{
-    $stmt = $mysqli->prepare("SELECT Id,Username,Text,Image,time
-    FROM posts
-    WHERE username!=? and username not in (
-    Select Username2 from blocked
-    where Username1=?
-    union
-    SELECT Username1 from blocked
-    where Username2=?
-       )
-    ORDER BY time desc");
-    $stmt->bind_param("sss", $username, $username, $username);
+    if ($_SESSION['admin']){
+        $stmt = $mysqli->prepare("SELECT Id,Username,Text,Image,time
+            FROM posts
+            WHERE username!=?
+            ORDER BY time desc");
+        $stmt->bind_param('s', $username);
+    }
+    else {
+        $stmt = $mysqli->prepare("SELECT Id,Username,Text,Image,time
+        FROM posts
+        WHERE username!=? and username not in (
+        Select Username2 from blocked
+        where Username1=?
+        union
+        SELECT Username1 from blocked
+        where Username2=?
+           )
+        ORDER BY time desc");
+        $stmt->bind_param("sss", $username, $username, $username);
+    }
 }
 
 $stmt->execute();

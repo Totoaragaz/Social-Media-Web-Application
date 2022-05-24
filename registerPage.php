@@ -11,6 +11,10 @@ if (isset($_POST['username'])) {
         header("Location:registerPage.php?error=Username is required.");
         exit();
     }
+    else if (strlen($username)>30){
+        header("Location:registerPage.php?error=Username must be under 30 characters long.");
+        exit();
+    }
     else if (str_contains($username,"<script>")){
         header("Location:registerPage.php?error=Fuck you.");
         exit();
@@ -21,6 +25,10 @@ if (isset($_POST['username'])) {
     }
     if (empty($password)) {
         header("Location:registerPage.php?error=Password is required.");
+        exit();
+    }
+    if (strlen($password)>50 || strlen($password)<5) {
+        header("Location:registerPage.php?error=Password must be between 5 and 50 characters long.");
         exit();
     }
     else {

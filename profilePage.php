@@ -58,6 +58,14 @@ $profileUser=$_GET['profile'];
             reportPost($username,$_GET['rp'],$mysqli);
             $popup="Thank you for your report! Our admins will have a look.";
         }
+        if (isset($_GET['e'])){
+            if ($_GET['e']=='e'){
+                $popup="Post can't be empty.";
+            }
+            if ($_GET['e']=='l'){
+                $popup="Post can't be over 255 characters long.";
+            }
+        }
     }
     if (isset($_GET['pi']) and isset($_GET['pt']) and !isset($_GET['a'])){
         $posttext=$_GET['pt'];
@@ -124,13 +132,16 @@ $stmt->close();
         const user='<?=$username?>';
         const img=document.getElementById('postimg').value.replace("C:\\fakepath\\",'');
         const text=document.getElementById('posttext').value;
+        if (text.length>255) window.location.href='profilePage.php?profile='+user+'$pi='+img;
         window.location.href = 'profilePage.php?profile='+user+'&pi='+img+'&pt='+text;
     }
     function post(){
         const user='<?=$username?>';
         const img='<?=$postimg?>';
         const text=document.getElementById('posttext').value;
-        window.location.href = 'profilePage.php?profile='+user+'&a=p'+'&pi='+img+'&pt='+text;
+        if (text==="") window.location.href='profilePage.php?profile='+user+'&e=e';
+        else if (text.length>255) window.location.href = 'profilePage.php?profile='+user+'&e=l';
+        else window.location.href = 'profilePage.php?profile='+user+'&a=p'+'&pi='+img+'&pt='+text;
     }
 
     function auto_grow(element) {
